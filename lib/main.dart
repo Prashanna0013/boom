@@ -1,312 +1,225 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
+import 'package:smartme/devicepage.dart';
+import 'package:smartme/profilepage.dart';
+import 'package:smartme/sportspage.dart'; // Import the intl package for date formatting
 
 void main() {
-  runApp(HealthDashboard());
+  runApp(MyApp());
 }
 
-class HealthDashboard extends StatelessWidget {
+class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      debugShowCheckedModeBanner: false,
-      title: 'Health Dashboard',
-      theme: ThemeData(
-        primarySwatch: Colors.orange,
+    return MaterialApp(debugShowCheckedModeBanner: false, home: HomePage());
+  }
+}
+
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  int _currentIndex = 0;
+
+  // List of pages including the ProfilePage
+  final List<Widget> _pages = [
+    HealthDashboard(),
+    SportsPage(),
+    DevicePage(),
+    ProfilePage(), // Navigate to the ProfilePage
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text('Health'),
       ),
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text('Health'),
-          backgroundColor: Colors.white,
-          foregroundColor: Colors.black,
-          elevation: 0,
-        ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Column(
-              children: [
-                // Today's Data Card
-                Container(
-                  padding: EdgeInsets.all(16.0),
-                  decoration: BoxDecoration(
-                    color: Colors.orange[400],
-                    borderRadius: BorderRadius.circular(16.0),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "Today's Data",
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Text(
-                        'Goal For Today: 5000 Steps',
-                        style: TextStyle(
-                          color: Colors.white,
-                          fontSize: 14,
-                        ),
-                      ),
-                      SizedBox(height: 8.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'Distance: 0.00 Km\nGoal Completion: 0%',
-                            style: TextStyle(
-                              color: Colors.white,
-                              fontSize: 14,
-                            ),
-                          ),
-                          Column(
-                            children: [
-                              Text(
-                                '0',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 24,
-                                  fontWeight: FontWeight.bold,
-                                ),
-                              ),
-                              Text(
-                                'Steps',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ],
-                  ),
-                ),
-                SizedBox(height: 16.0),
-
-                // Grid section with tappable items
-                GridView.builder(
-                  shrinkWrap: true,
-                  physics: NeverScrollableScrollPhysics(),
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 1.4,
-                    crossAxisSpacing: 16.0,
-                    mainAxisSpacing: 16.0,
-                  ),
-                  itemCount: 6,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        // Action for each grid button
-                        print('Tapped on: $index');
-                      },
-                      child: _buildGridCard(
-                        _getGridTitle(index),
-                        _getGridValue(index),
-                        _getGridIcon(index),
-                        _getGridColor(index),
-                      ),
-                    );
-                  },
-                ),
-                SizedBox(height: 16.0),
-
-                // Horizontal Exercise Suggestions Section
-                Container(
-                  height: 150.0,
-                  child: ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    itemCount: 5, // Number of exercise suggestions
-                    itemBuilder: (context, index) {
-                      return _buildExerciseSuggestionCard(
-                        'Exercise $index',
-                        Icons.fitness_center,
-                      );
-                    },
-                  ),
-                ),
-              ],
-            ),
+      body: _pages[_currentIndex], // Display the selected page
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        currentIndex: _currentIndex,
+        onTap: (index) {
+          setState(() {
+            _currentIndex = index;
+          });
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.flash_on),
+            label: 'Home',
           ),
-        ),
-        bottomNavigationBar: BottomNavigationBar(
-          items: const <BottomNavigationBarItem>[
-            BottomNavigationBarItem(
-              icon: Icon(Icons.flash_on),
-              label: 'Home',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.directions_run),
-              label: 'Sports',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.watch),
-              label: 'Device',
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.person),
-              label: 'Profile',
-            ),
-          ],
-          selectedItemColor: Colors.orange,
-          unselectedItemColor: Colors.grey,
-          showUnselectedLabels: true,
-        ),
-      ),
-    );
-  }
-
-  // Helper method to build each card in the grid view
-  Widget _buildGridCard(
-      String title, String value, IconData icon, Color color) {
-    return Card(
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
-      elevation: 4,
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Icon(icon, color: color, size: 32.0),
-            Spacer(),
-            Text(
-              title,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 16,
-              ),
-            ),
-            SizedBox(height: 4.0),
-            Text(
-              value,
-              style: TextStyle(
-                fontSize: 14,
-                color: Colors.grey[600],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  // Helper method to build exercise suggestion cards
-  Widget _buildExerciseSuggestionCard(String exerciseName, IconData icon) {
-    return Container(
-      width: 120.0,
-      margin: EdgeInsets.symmetric(horizontal: 8.0),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12.0),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.grey.withOpacity(0.2),
-            spreadRadius: 2,
-            blurRadius: 4,
-            offset: Offset(0, 2),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.directions_run),
+            label: 'Sports',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.model_training_rounded),
+            label: 'AI',
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.person),
+            label: 'Profile',
           ),
         ],
       ),
-      child: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, color: Colors.blue, size: 32.0),
-            SizedBox(height: 8.0),
-            Text(
-              exerciseName,
-              textAlign: TextAlign.center,
-              style: TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 14,
+    );
+  }
+}
+
+class HealthDashboard extends StatelessWidget {
+  final List<Map<String, dynamic>> healthData = [
+    {
+      'icon': Icons.directions_run,
+      'title': 'Sports Record',
+      'data': '0m 0s',
+    },
+    {
+      'icon': Icons.local_fire_department,
+      'title': 'Calories',
+      'data': '0 Kcal',
+      'target': 'Target: 300Kcal',
+    },
+    {
+      'icon': Icons.favorite,
+      'title': 'Heart Rate',
+      'data': '-- bpm',
+      'chartData': [
+        50,
+        60,
+        70,
+        80,
+        90,
+        80,
+        70,
+        60,
+        50,
+        60,
+        70,
+        80
+      ], // Sample chart data
+    },
+    {
+      'icon': Icons.water_drop,
+      'title': 'Blood Oxygen',
+      'data': '-- %',
+    },
+    {
+      'icon': Icons.bedtime,
+      'title': 'Sleep',
+      'data': DateFormat('MM-dd HH:mm')
+          .format(DateTime.now()), // Current date and time
+    },
+    {
+      'icon': Icons.bloodtype,
+      'title': 'Blood Pressure',
+      'data': '80/120',
+    },
+  ];
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Container(
+          padding: EdgeInsets.all(20),
+          color: Colors.orange,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                "Today's Data",
+                style: TextStyle(
+                  fontSize: 18,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.white,
+                ),
               ),
-            ),
-          ],
+              SizedBox(height: 5),
+              Text(
+                "Goal For Today: 5000 Steps",
+                style: TextStyle(
+                  fontSize: 16,
+                  color: Colors.white,
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    "Distance: 0.00Km",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Text(
+                    "Goal Completion: 0%",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
-      ),
+        SizedBox(height: 20),
+        Expanded(
+          child: GridView.builder(
+            padding: EdgeInsets.all(10),
+            gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+              crossAxisCount: 2, // Number of columns
+              crossAxisSpacing: 10,
+              mainAxisSpacing: 10,
+            ),
+            itemCount: healthData.length,
+            itemBuilder: (context, index) {
+              return buildHealthCard(healthData[index]);
+            },
+          ),
+        ),
+      ],
     );
   }
 
-  // Methods to get grid details for each index
-  String _getGridTitle(int index) {
-    switch (index) {
-      case 0:
-        return 'Sports Record';
-      case 1:
-        return 'Calories';
-      case 2:
-        return 'Heart Rate';
-      case 3:
-        return 'Blood Oxygen';
-      case 4:
-        return 'Sleep';
-      case 5:
-        return 'Blood Pressure';
-      default:
-        return '';
-    }
-  }
-
-  String _getGridValue(int index) {
-    switch (index) {
-      case 0:
-        return '0m 0s';
-      case 1:
-        return '0 Kcal';
-      case 2:
-        return '-- bpm';
-      case 3:
-        return '-- %';
-      case 4:
-        return '10-04';
-      case 5:
-        return '--';
-      default:
-        return '';
-    }
-  }
-
-  IconData _getGridIcon(int index) {
-    switch (index) {
-      case 0:
-        return Icons.directions_run;
-      case 1:
-        return Icons.local_fire_department;
-      case 2:
-        return Icons.favorite;
-      case 3:
-        return Icons.opacity;
-      case 4:
-        return Icons.bedtime;
-      case 5:
-        return Icons.monitor_heart;
-      default:
-        return Icons.help_outline;
-    }
-  }
-
-  Color _getGridColor(int index) {
-    switch (index) {
-      case 0:
-        return Colors.orange;
-      case 1:
-        return Colors.amber;
-      case 2:
-        return Colors.red;
-      case 3:
-        return Colors.redAccent;
-      case 4:
-        return Colors.purple;
-      case 5:
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
+  Widget buildHealthCard(Map<String, dynamic> data) {
+    return Card(
+      child: InkWell(
+        onTap: () {}, // Empty onPressed function
+        child: Padding(
+          padding: const EdgeInsets.all(20.0),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                data['icon'],
+                size: 40,
+              ),
+              SizedBox(height: 10),
+              Text(
+                data['title'],
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
+              ),
+              SizedBox(height: 10),
+              Text(
+                data['data'],
+                style: TextStyle(fontSize: 16),
+              ),
+              if (data['target'] != null)
+                Text(
+                  data['target'],
+                  style: TextStyle(fontSize: 14, color: Colors.grey),
+                ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
