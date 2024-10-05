@@ -31,7 +31,7 @@ This is a Flutter application that allows users to select exercises based on dif
 
 ### 1. Clone the repository:
 ```bash
-git clone https://github.com/yourusername/exercise_selector_app.git
+git clone https://github.com/Prashanna0013/boom.git
 cd exercise_selector_app
 ```
 
