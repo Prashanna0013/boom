@@ -52,7 +52,7 @@ flutter:
 ```
 
 ### 4. Add your CSV file:
-- Place your `exercises.csv` file in the `assets` folder, which contains the input data for the TensorFlow Lite model. This CSV should have the format:
+- Place your `new_data (5).csv` file in the `assets` folder, which contains the input data for the TensorFlow Lite model. This CSV should have the format:
   ```
   S.no,Title,Desc,Type,BodyPart,Equipment,Level
   0,Partner plank band row,... 
@@ -75,7 +75,7 @@ lib/
 ├── device_page.dart              # Main UI page with exercise options
 ├── assets/                       # Folder containing model and CSV file
 │   ├── beginner.tflite           # Pre-trained TensorFlow Lite model
-│   └── exercises.csv             # CSV file containing exercise data
+│   └── new_data (5).csv            # CSV file containing exercise data
 ```
 
 ### TensorFlow Service (`rlmodel.dart`)
@@ -90,7 +90,7 @@ lib/
 
 ## Sample CSV File
 
-Here is a small sample of how the `exercises.csv` file should look:
+Here is a small sample of how the `new_data (5).csv` file should look:
 
 ```csv
 S.no,Title,Desc,Type,BodyPart,Equipment,Level
@@ -114,8 +114,8 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 For any questions or feedback, please contact:
 
-- Name: Your Name
-- Email: your.email@example.com
+- Name: Prashanna Kumar S
+- Email: spksen13@gmail.com
 
 ---
 
